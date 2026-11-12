@@ -3,7 +3,7 @@ import privateMarshMellow from './assets/privateMarshMellow.gif'
 import elfHotChoclate from './assets/elfHotChoclate.gif'
 import fishingHotChoclate from './assets/fishingHotChoclate.gif'
 import happyHotCocoaDay from './assets/happyHotCocoaDay.gif'
-import marshMellowBath from './assets/marshMellowBath.gif'
+import marshMellowBath from './assets/marshmellowBath.gif'
 import onsenHotChoclate from './assets/onsenHotChoclate.gif'
 import {
   AlertCircle,
