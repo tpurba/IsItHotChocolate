@@ -5,6 +5,7 @@ import fishingHotChoclate from './assets/fishingHotChoclate.gif'
 import happyHotCocoaDay from './assets/happyHotCocoaDay.gif'
 import marshMellowBath from './assets/marshmellowBath.gif'
 import onsenHotChoclate from './assets/onsenHotChoclate.gif'
+import GambleWheel from './GambleWheel'
 import {
   AlertCircle,
   Check,
@@ -70,6 +71,7 @@ function App() {
   const [updatedAt, setUpdatedAt] = useState(null)
   const [showCocoaJoy, setShowCocoaJoy] = useState(false)
   const [cocoaJoyImage, setCocoaJoyImage] = useState(null)
+  const [showWheel, setShowWheel] = useState(false)
 
   const loadWeather = useCallback(() => {
     setLoading(true)
@@ -126,9 +128,16 @@ function App() {
     setCocoaJoyImage(randomImage)
   }, [loadWeather])
 
+  const yesPercentage = weather
+    ? (weather.temperature_2m < 50 ? 30 : 0) +
+      (weather.wind_speed_10m >= 5 ? 10 : 0) +
+      (weather.weather_code >= 51 ? 60 : 0)
+    : 0
+
   const isHotChocolateDay = weather
     ? weather.temperature_2m < 50 && weather.wind_speed_10m >= 5 && weather.weather_code >= 51
     : false
+
   const reasons = useMemo(
     () =>
       weather
@@ -174,7 +183,7 @@ function App() {
           </div>
           <button
             onClick={loadWeather}
-            className="flex items-center gap-2 rounded-full border border-[#e7dacb] bg-white/70 px-4 py-2.5 text-sm font-semibold text-[#6d321c] transition hover:bg-white"
+            className="flex items-center gap-2 rounded-full border border-[#e7dacb] bg-white/70 px-4 py-2.5 text-sm font-semibold text-[#6d321c] transition hover:bg-white hover:cursor-pointer"
             aria-label="Refresh weather"
           >
             <RefreshCw className={loading ? 'size-4 animate-spin' : 'size-4'} /> Refresh
@@ -235,13 +244,23 @@ function App() {
                     : "It's a little too pleasant out there for cocoa today. We'll keep watching."}
             </p>
             <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-white/20 pt-5 text-sm opacity-75">
-              <button
-                type="button"
-                onClick={() => setShowCocoaJoy(true)}
-                className="rounded-full border border-white px-4 py-2 font-semibold transition hover:text-white hover:bg-[#b65b2c] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
-              >
-                {isHotChocolateDay ? 'Click me for Cocoa Joy!' : 'Click me to cheer up!'}
-              </button>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowCocoaJoy(true)}
+                  className="rounded-full border border-white px-4 py-2 font-semibold transition hover:cursor-pointer hover:text-white hover:bg-[#b65b2c] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+                >
+                  {isHotChocolateDay ? 'Click me for Cocoa Joy!' : 'Click me to cheer up!'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowWheel(true)}
+                  disabled={!weather || loading || Boolean(error) || yesPercentage === 100 || yesPercentage === 0}
+                  className="rounded-full bg-[#fff8ef] px-4 py-2 font-semibold text-[#6d321c] transition hover:cursor-pointer hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  Test your luck for a cup
+                </button>
+              </div>
               <div className="flex items-center gap-3">
                 <LocateFixed className="size-4" />
                 Based on your local weather
@@ -335,6 +354,12 @@ function App() {
             </button>
           </section>
         </div>
+      )}
+      {showWheel && (
+        <GambleWheel
+          yesPercentage={yesPercentage}
+          onClose={() => setShowWheel(false)}
+        />
       )}
     </main>
   )
