@@ -129,14 +129,17 @@ function App() {
   }, [loadWeather])
 
   const yesPercentage = weather
-    ? (weather.temperature_2m < 50 ? 30 : 0) +
+    ? (weather.temperature_2m < 50 ? 60 : 0) +
       (weather.wind_speed_10m >= 5 ? 10 : 0) +
-      (weather.weather_code >= 51 ? 60 : 0)
+      (weather.weather_code >= 51 ? 30 : 0)
     : 0
 
   const isHotChocolateDay = weather
-    ? weather.temperature_2m < 50 && weather.wind_speed_10m >= 5 && weather.weather_code >= 51
-    : false
+    ? weather.temperature_2m < 30 ||
+      (weather.temperature_2m < 50 &&
+       weather.wind_speed_10m >= 5 &&
+       weather.weather_code >= 51)
+    : false;
 
   const reasons = useMemo(
     () =>
